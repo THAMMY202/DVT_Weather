@@ -38,6 +38,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.system.exitProcess
 
 
 class MainActivity : AppCompatActivity() {
@@ -55,7 +56,6 @@ class MainActivity : AppCompatActivity() {
     //Recyclerview
     private lateinit var weatherAdapter: WeatherAdapter
     private lateinit var recyclerViewModel: RecyclerViewModel
-    val item = ArrayList<Forecast>()
 
     //global variable of FusedLocationProviderClient
     val RequestPermissionCode = 1
@@ -64,13 +64,10 @@ class MainActivity : AppCompatActivity() {
     var current_lat: Double = 0.0
     var current_long: Double = 0.0
     var currentPlace: String = ""
-    //SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-
         //Request permisssion
         RequestLocationPermission()
 
@@ -98,6 +95,7 @@ class MainActivity : AppCompatActivity() {
         forecastViewModel.getForecast().observe(this, Observer<List<Forecast>> { forecast ->
             weatherAdapter.setListData(forecast)
         })
+
         recyclerView.adapter = weatherAdapter
         //currentWeather data from Room
         forecastViewModel.getCurrent().observe(this, Observer<List<CurrentWeather>> {
@@ -147,7 +145,6 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this@MainActivity, AddCityActivity::class.java)
             startActivity(intent)
         }
-
     }
 
     private fun RequestLocationPermission() {
@@ -214,9 +211,6 @@ class MainActivity : AppCompatActivity() {
                 "Thunderstorm" -> R.drawable.forest_rainy
                 else -> R.drawable.default_list_image
             }
-
-
-
 
             addCurrentData(
                 city,
@@ -342,7 +336,7 @@ class MainActivity : AppCompatActivity() {
                         weatherDescription = user.list[i].weather[0].description
                         icon = user.list[i].weather[0].icon
                         Log.d(
-                            "thulani",
+                            "thamsanqa",
                             "apiTimeStamp:$timeStamp  appTime: $unix_timestamp   Date:$date1 index=$i  temp= $tempMax1"
                         )
                         val resourceId = when (weatherMain) {
@@ -404,8 +398,6 @@ class MainActivity : AppCompatActivity() {
                                     //Assigning latLong to find current weather
                                     getCurrentWeather(address)
                                     getForecast(address)
-
-                                    //
                                 }
                             }
 
@@ -415,6 +407,9 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     fab.hide()
                     Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show()
+
+                    finish()
+                    System.exit(0);
                 }
                 return
             }

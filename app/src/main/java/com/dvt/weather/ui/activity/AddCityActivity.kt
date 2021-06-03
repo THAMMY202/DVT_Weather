@@ -59,7 +59,7 @@ class AddCityActivity : AppCompatActivity() {
         val autocompleteFragment =
             supportFragmentManager.findFragmentById(R.id.autocomplte) as AutocompleteSupportFragment?
         autocompleteFragment!!.setPlaceFields(listOf(Place.Field.ID, Place.Field.NAME))
-        //autocompleteFragment.setCountries("AU", "NZ")
+        autocompleteFragment.setCountries("ZA")
         autocompleteFragment.setActivityMode(AutocompleteActivityMode.FULLSCREEN)
         autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(place: Place) {

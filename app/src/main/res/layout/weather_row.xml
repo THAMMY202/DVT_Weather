@@ -8,7 +8,7 @@
     android:padding="16dp">
 
   <ImageView
-      android:id="@+id/imageViewPlayer"
+      android:id="@+id/imageViewTemperatureIcon"
       android:layout_width="25dp"
       android:contentDescription="@string/app_name"
       android:layout_height="25dp"
@@ -29,7 +29,7 @@
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintHorizontal_bias="0.788"
-      app:layout_constraintStart_toEndOf="@+id/imageViewPlayer"
+      app:layout_constraintStart_toEndOf="@+id/imageViewTemperatureIcon"
       app:layout_constraintTop_toTopOf="parent"
       tools:text="27°" />
 
@@ -40,7 +40,7 @@
       android:textColor="@color/white"
       android:textAppearance="@style/TextAppearance.AppCompat.Headline"
       app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toStartOf="@+id/imageViewPlayer"
+      app:layout_constraintEnd_toStartOf="@+id/imageViewTemperatureIcon"
       app:layout_constraintHorizontal_bias="0.033"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"

@@ -30,7 +30,6 @@ class SplashScreen : AppCompatActivity() {
         slideIn = AnimationUtils.loadAnimation(this, R.anim.slide_in_left)
         slideOut = AnimationUtils.loadAnimation(this, R.anim.slide_out_right)
 
-
         logo = findViewById<View>(R.id.logo) as TextView
         appName = findViewById<View>(R.id.appName) as TextView
         createdBy = findViewById<View>(R.id.createdBy) as TextView
