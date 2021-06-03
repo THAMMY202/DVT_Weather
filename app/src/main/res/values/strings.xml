@@ -9,4 +9,29 @@
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="collable">header</string>
+    <string name="temperature">°</string>
+    <string name="temp_image">main</string>
+    <string name="textview">19°</string>
+    <string name="current_temp">-</string>
+    <string name="min">min</string>
+    <string name="current">current</string>
+    <string name="max">max</string>
+    <string name="temp_max">TextView</string>
+    <string name="temp_max1">20°</string>
+    <string name="max_temp">max</string>
+    <string name="temp_desc">-</string>
+    <string name="updated_at">update_at</string>
+    <string name="weather_source">openweathermap</string>
+    <string name="city">-</string>
+    <string name="preference_file_key">shared_place</string>
+    <string name="feel_like">feel</string>
+    <string name="weather_details">weather</string>
+    <string name="floating">floating</string>
+    <string name="todo">TODO</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyDUmh36pSDVJQwoDnX7NX12tfNgCy6KDts</string>
+    <string name="fab">fab</string>
+
+
 </resources>

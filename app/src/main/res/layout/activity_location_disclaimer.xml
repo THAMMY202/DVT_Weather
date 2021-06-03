@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LocationDisclaimerActivity"
+    android:background="@color/colorPrimaryDark"
+    android:fitsSystemWindows="true">
+
+    <RelativeLayout
+        android:padding="16dp"
+        android:layout_margin="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/imgLocation"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/location" />
+
+        <TextView
+            android:id="@+id/tvHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/imgLocation"
+            android:layout_centerHorizontal="true"
+            android:text="Use your location"
+            android:textSize="30sp" />
+
+        <TextView
+            android:id="@+id/tvSubHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvHeader"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="16dp"
+            android:text="The DVT Weather app will use your location services in the background in order to give you weather reports base on your GPS coordinates."
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/btnForbidding"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true"
+            android:text="No thanks" />
+
+        <Button
+            android:id="@+id/btnAllow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:text="Allow" />
+
+    </RelativeLayout>
+
+</RelativeLayout>
