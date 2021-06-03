@@ -109,12 +109,12 @@ class MainActivity : AppCompatActivity() {
 
             while (i < total_list) {
                 textViewCity.text = "${it[i].place}"
-                textViewCurrentTemp1.text =("${it[i].temperature_current} ° ")
-                textViewCurrentTemp2.text =("${it[i].temperature_current} ° ")
-                textViewMaxTemp.text =("${it[i].temperature_max} ° ")
-                textViewMinTemp.text =("${it[i].temperature_min} ° ")
-                textViewTempDesc.text =(" ${it[i].temperature}")
-                textViewFeelLike.text =("Feels like ${it[i].feelLike}°")
+                textViewCurrentTemp1.text = ("${it[i].temperature_current} ° ")
+                textViewCurrentTemp2.text = ("${it[i].temperature_current} ° ")
+                textViewMaxTemp.text = ("${it[i].temperature_max} ° ")
+                textViewMinTemp.text = ("${it[i].temperature_min} ° ")
+                textViewTempDesc.text = (" ${it[i].temperature}")
+                textViewFeelLike.text = ("Feels like ${it[i].feelLike}°")
                 temperatureDescription = it[i].temperature
                 textViewUpdatedAt.text = "updated ${it[i].updatedAt}"
                 ImageViewTemp.setImageResource(it[i].weatherIcon)

@@ -39,12 +39,12 @@ class SplashScreen : AppCompatActivity() {
         createdBy!!.animation = buttonAnimation
         Handler().postDelayed({
 
-            if(dataSharedPref.getInt(key,0) ==0 ){
+            if (dataSharedPref.getInt(key, 0) == 0) {
                 val intent = Intent(this@SplashScreen, LocationDisclaimerActivity::class.java)
                 startActivity(intent)
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
                 finish()
-            }else{
+            } else {
                 val intent = Intent(this@SplashScreen, MainActivity::class.java)
                 startActivity(intent)
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
