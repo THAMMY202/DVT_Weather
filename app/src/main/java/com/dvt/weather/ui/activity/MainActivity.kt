@@ -63,7 +63,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     var current_lat: Double = 0.0
     var current_long: Double = 0.0
-    var currentPlace: String = ""
+    var currentPlace: String = "Durban"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -381,6 +381,7 @@ class MainActivity : AppCompatActivity() {
                         ) ===
                                 PackageManager.PERMISSION_GRANTED)
                     ) {
+
                         val geocoder = Geocoder(this, Locale.getDefault())
                         var addresses: List<Address>
 
@@ -400,6 +401,16 @@ class MainActivity : AppCompatActivity() {
                                     getForecast(address)
                                 }
                             }
+                            .addOnFailureListener {
+                                Toast.makeText(
+                                    this, "Failed on getting current location",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+
+                                //Failed to get current location ? use the default
+                                getCurrentWeather(currentPlace)
+                                getForecast(currentPlace)
+                            }
 
                         Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show()
                     }
@@ -415,6 +426,4 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
-
 }

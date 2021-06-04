@@ -121,9 +121,9 @@ class AddCityActivity : AppCompatActivity() {
                     val gson = Gson()
 
                     val placeTemp: Main = gson.fromJson(json.toString(), Main::class.java)
-                    Log.i("Place Temperature", placeTemp.temp.toString())
+                    Log.i("Place Temperature", placeTemp.tempMax.toString())
 
-                    val dataFavarite = FavoriteModel(0, selectPlace, placeTemp.temp)
+                    val dataFavarite = FavoriteModel(0, selectPlace, placeTemp.tempMax)
                     forecastViewModel.insertFavorite(dataFavarite)
                     Toast.makeText(this, "Favorite place successfully added", Toast.LENGTH_SHORT)
                         .show()
