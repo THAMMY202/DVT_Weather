@@ -6,7 +6,6 @@
     android:background="@color/colorPrimaryDark"
     android:fitsSystemWindows="true">
 
-
   <ImageView
       android:id="@+id/ImageViewTemp"
       android:layout_width="413dp"

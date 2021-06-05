@@ -22,6 +22,12 @@ class FavoriteAdaptor(private val items: MutableList<FavoriteModel>) : RecyclerV
         this.items.addAll(data)
         notifyDataSetChanged()
     }
+
+    fun clearListData() {
+        this.items.clear()
+        notifyDataSetChanged()
+    }
+
     override fun getItemCount() = items.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

@@ -94,9 +94,9 @@ class AddCityActivity : AppCompatActivity() {
         //init ForecastViewModel Room database
         forecastViewModel = ViewModelProvider(this).get(ForecastViewModel::class.java)
         forecastViewModel.getFavorite().observe(this, Observer<List<FavoriteModel>> { favorite ->
+            favoriteAdaptor.clearListData()
             favoriteAdaptor.setListData(favorite)
             favoriteAdaptor.notifyDataSetChanged()
-
         })
 
         recyclerView.adapter = favoriteAdaptor
@@ -105,8 +105,7 @@ class AddCityActivity : AppCompatActivity() {
     //TODO
     private fun getTemperatureByPlaceName(city: String) {
         // url to get json object
-        val url =
-            "http://api.openweathermap.org/data/2.5/weather?q=$city&appid=${Constants.API_KEY}"
+        val url = "https://api.openweathermap.org/data/2.5/weather?q=$city&units=metric&appid=${Constants.API_KEY}"
 
         // request json object response from the provided url
         val request = JsonObjectRequest(
@@ -121,9 +120,9 @@ class AddCityActivity : AppCompatActivity() {
                     val gson = Gson()
 
                     val placeTemp: Main = gson.fromJson(json.toString(), Main::class.java)
-                    Log.i("Place Temperature", placeTemp.tempMax.toString())
+                    Log.i("Place Temperature", placeTemp.temp.toString())
 
-                    val dataFavarite = FavoriteModel(0, selectPlace, placeTemp.tempMax)
+                    val dataFavarite = FavoriteModel(0, selectPlace, placeTemp.temp)
                     forecastViewModel.insertFavorite(dataFavarite)
                     Toast.makeText(this, "Favorite place successfully added", Toast.LENGTH_SHORT)
                         .show()

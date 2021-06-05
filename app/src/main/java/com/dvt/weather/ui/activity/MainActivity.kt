@@ -1,20 +1,28 @@
 package com.dvt.weather.ui.activity
 
 import android.Manifest
+import android.annotation.SuppressLint
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
+import android.location.LocationManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -37,8 +45,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.activity_main.*
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.system.exitProcess
 
 
 class MainActivity : AppCompatActivity() {
@@ -68,8 +74,13 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        if(!isGpsEnabled()){
+            Toast.makeText(this,"Please enable GPS services",Toast.LENGTH_LONG).show()
+        }
+
         //Request permisssion
-        RequestLocationPermission()
+        requestLocationPermission()
 
         //init items
         val textViewCurrentTemp1: TextView = findViewById(R.id.textViewCurrentTemp1)
@@ -147,7 +158,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun RequestLocationPermission() {
+    private fun requestLocationPermission() {
         if (ContextCompat.checkSelfPermission(
                 this@MainActivity,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -171,6 +182,14 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+    //Check if GPS is turned on
+    private fun isGpsEnabled(): Boolean {
+        val service = getSystemService(LOCATION_SERVICE) as LocationManager
+        return service.isProviderEnabled(LocationManager.GPS_PROVIDER) && service.isProviderEnabled(
+            LocationManager.NETWORK_PROVIDER
+        )
+    }
+
 
     private fun getCurrentWeather(city: String) {
         //room view model
@@ -198,13 +217,11 @@ class MainActivity : AppCompatActivity() {
             val netDate = Date(timestamp.toLong() * 1000)
             val sdf = SimpleDateFormat("dd/MM/yy hh:mm a")
             val updatedAt = sdf.format(netDate)
-            //textViewUpdatedAt.setText("Updated ${updatedAt}")
 
-            //change the temp image based on condition and theme color
-
+            sendNotification(tempDesc,"$convertedTempCurrent °")
 
             val resourceId = when (tempTitle) {
-                "Clouds" -> R.drawable.forest_cloudy //Log.d("Current", "Clouds")
+                "Clouds" -> R.drawable.forest_cloudy
                 "Sunny" -> R.drawable.forest_sunny
                 "Rain" -> R.drawable.forest_rainy
                 "Clear" -> R.drawable.forest_sunny
@@ -275,8 +292,6 @@ class MainActivity : AppCompatActivity() {
         forecastViewModel.insertForecast(forecastData)
         //weatherAdapter.setListData(forecastData)
         //weatherAdapter.notifyDataSetChanged()
-
-
     }
 
 
@@ -356,6 +371,43 @@ class MainActivity : AppCompatActivity() {
 
 
         })
+
+    }
+
+    fun sendNotification(condition: String,temperature: String) {
+
+        lateinit var notificationChannel: NotificationChannel
+        lateinit var notificationManager: NotificationManager
+        lateinit var builder: Notification.Builder
+        val channelId = "12345"
+        val description = "Test Notification"
+
+        notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as  NotificationManager
+
+        val intent = Intent(this, MainActivity::class.java)
+        val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            notificationChannel = NotificationChannel(channelId, description, NotificationManager .IMPORTANCE_HIGH)
+            notificationManager.createNotificationChannel(notificationChannel)
+            builder = Notification.Builder(this, channelId)
+                .setContentTitle(temperature)
+                .setContentText("Today  weather is $condition").setSmallIcon(R.mipmap.ic_launcher)
+                .setLargeIcon(BitmapFactory.decodeResource(this.resources, R.mipmap.ic_launcher)).setContentIntent(pendingIntent)
+        }
+        notificationManager.notify(12345, builder.build())
+
+
+        var notification = NotificationCompat.Builder(this, "thamsanqa")
+            .setSmallIcon(R.drawable.clear)
+            .setContentTitle("Test")
+            .setContentText("Test")
+            .setLargeIcon(BitmapFactory.decodeResource(this.resources, R.drawable.clear))
+            .setStyle(NotificationCompat.BigPictureStyle()
+                .bigPicture(BitmapFactory.decodeResource(this.resources, R.drawable.clear))
+                .bigLargeIcon(null))
+            .build()
+
+
 
     }
 

@@ -1,76 +1,117 @@
 package com.dvt.weather.adaptor
 
 import android.annotation.SuppressLint
+import android.app.Dialog
 import android.content.Context
-import android.content.Intent
+import android.view.*
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
-import androidx.core.content.ContextCompat.startActivity
+import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.dvt.weather.R
 import com.dvt.weather.database.Forecast
-import com.dvt.weather.ui.activity.MainActivity
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
 
-class WeatherAdapter( private val items: MutableList<Forecast>) : RecyclerView.Adapter<WeatherAdapter.ViewHolder>()  {
+class WeatherAdapter(private val items: MutableList<Forecast>) :
+    RecyclerView.Adapter<WeatherAdapter.ViewHolder>() {
 
+    lateinit var mContext: Context
+    lateinit var root_layout: ViewGroup
+    lateinit var dialog: Dialog
 
-  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-    val view = LayoutInflater.from(parent.context).inflate(R.layout.weather_row, parent, false)
-    return ViewHolder(view)
-  }
-  fun setListData(data: List<Forecast>) {
-    this.items.addAll(data)
-    notifyDataSetChanged()
-  }
-  override fun getItemCount() = items.size
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        mContext = parent.context
+        root_layout = parent
+        dialog = Dialog(parent.context)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.weather_row, parent, false)
+        return ViewHolder(view)
+    }
 
-  override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    fun clearListData() {
+        this.items.clear()
+        notifyDataSetChanged()
+    }
 
-    holder.bind(items[position])
-    holder.imageViewTemperatureIcon.setImageResource(items[position].weatherIcon)
+    fun setListData(data: List<Forecast>) {
+        this.items.addAll(data)
+        notifyDataSetChanged()
+    }
 
-   /* holder.itemView.setOnClickListener {
-      var selectedPosition :Int = holder.adapterPosition
-      var forecast: Forecast = items[selectedPosition]
-    }*/
-  }
-  @SuppressLint("NewApi")
-  public fun getConvertedDay(date: String): String {
+    override fun getItemCount() = items.size
 
-    return SimpleDateFormat(
-      "EEEE",
-      Locale.ENGLISH
-    ).format(SimpleDateFormat("YYYY-MM-DD HH:MM:ss").parse(date))
-  }
-  class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)  {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-    val imageViewTemperatureIcon: ImageView = itemView.findViewById(R.id.imageViewTemperatureIcon)
-    private val textViewPlaceName: TextView = itemView.findViewById(R.id.textViewPlace)
-    private val textViewTemperature: TextView = itemView.findViewById(R.id.textViewTemperature)
+        holder.bind(items[position])
+        holder.imageViewTemperatureIcon.setImageResource(items[position].weatherIcon)
 
-      fun bind(data: Forecast){
+        // Set a click listener for button widget
+        holder.itemView.setOnClickListener {
+            var selectedPosition: Int = holder.adapterPosition
+            var forecast: Forecast = items[selectedPosition]
 
-        try {
-         val forecastDay= SimpleDateFormat(
-           "EEEE",
-           Locale.ENGLISH
-         ).format(SimpleDateFormat("yyyy-MM-dd ").parse(data.forecastDate))
-          textViewPlaceName.text =  forecastDay
-        } catch (e: ParseException) {
-          e.printStackTrace()
+            dialog.setContentView(R.layout.weather_details)
+
+            try {
+                val forecastDay = SimpleDateFormat(
+                    "EEEE",
+                    Locale.ENGLISH
+                ).format(SimpleDateFormat("yyyy-MM-dd ").parse(forecast.forecastDate))
+
+                var image: ImageView = dialog.findViewById(R.id.detailsImageView)
+
+                val resourceId = when (forecast.temperatureDescription) {
+                    "Clouds" -> R.drawable.forest_cloudy
+                    "Sunny" -> R.drawable.forest_sunny
+                    "Rain" -> R.drawable.forest_rainy
+                    "Clear" -> R.drawable.forest_sunny
+                    "Thunderstorm" -> R.drawable.forest_rainy
+                    else -> R.drawable.default_list_image
+                }
+
+                //image.setImageResource(resourceId)
+
+                var text: TextView = dialog.findViewById(R.id.detailsWeatherTextView)
+
+                text.text =
+                    "On  $forecastDay of the ${forecast.forecastDate} the weather temperature  will be ${
+                        Math.round(forecast.temperature)
+                    } °C ( ${forecast.temperatureDescription})"
+
+                dialog.show()
+
+            } catch (e: ParseException) {
+                e.printStackTrace()
+            }
+
         }
-          //var temp_value:String = data.temperature_max
-          //val temperatureValue:Double = temp_value.toDouble()
-          val roundTemp = Math.round(data.temperature)
-        textViewTemperature.text = "$roundTemp °"//data.weatherIcon
-      }
-  }
+    }
+
+
+
+    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+        val imageViewTemperatureIcon: ImageView =
+            itemView.findViewById(R.id.imageViewTemperatureIcon)
+        private val textViewPlaceName: TextView = itemView.findViewById(R.id.textViewPlace)
+        private val textViewTemperature: TextView = itemView.findViewById(R.id.textViewTemperature)
+
+        fun bind(data: Forecast) {
+
+            try {
+                val forecastDay = SimpleDateFormat(
+                    "EEEE",
+                    Locale.ENGLISH
+                ).format(SimpleDateFormat("yyyy-MM-dd ").parse(data.forecastDate))
+                textViewPlaceName.text = forecastDay
+            } catch (e: ParseException) {
+                e.printStackTrace()
+            }
+
+            val roundTemp = Math.round(data.temperature)
+            textViewTemperature.text = "$roundTemp °"
+        }
+    }
 }
