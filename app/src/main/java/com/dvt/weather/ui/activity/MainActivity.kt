@@ -1,7 +1,6 @@
 package com.dvt.weather.ui.activity
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -22,7 +21,6 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -42,6 +40,7 @@ import com.dvt.weather.restApi.WeatherViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.android.synthetic.main.activity_after_notification.*
 import kotlinx.android.synthetic.main.activity_main.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -49,6 +48,12 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
+    // declaring variables
+    lateinit var notificationManager: NotificationManager
+    lateinit var notificationChannel: NotificationChannel
+    lateinit var builder: Notification.Builder
+    private val channelId = "i.apps.notifications"
+    private val description = "Test notification"
 
     private lateinit var forecastViewModel: ForecastViewModel
     lateinit var viewModel: WeatherViewModel
@@ -75,8 +80,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        if(!isGpsEnabled()){
-            Toast.makeText(this,"Please enable GPS services",Toast.LENGTH_LONG).show()
+        if (!isGpsEnabled()) {
+            Toast.makeText(this, "Please enable GPS services", Toast.LENGTH_LONG).show()
         }
 
         //Request permisssion
@@ -182,6 +187,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
     //Check if GPS is turned on
     private fun isGpsEnabled(): Boolean {
         val service = getSystemService(LOCATION_SERVICE) as LocationManager
@@ -218,7 +224,16 @@ class MainActivity : AppCompatActivity() {
             val sdf = SimpleDateFormat("dd/MM/yy hh:mm a")
             val updatedAt = sdf.format(netDate)
 
-            sendNotification(tempDesc,"$convertedTempCurrent °")
+            val notificationSdf = SimpleDateFormat("hh:mm")
+            val notificationupdatedAt = notificationSdf.format(netDate)
+
+            sendNotification(
+                city,
+                "$convertedTempCurrent °",
+                "$convertedTempMax °",
+                "$convertedTempMin °",
+                notificationupdatedAt
+            )
 
             val resourceId = when (tempTitle) {
                 "Clouds" -> R.drawable.forest_cloudy
@@ -374,39 +389,50 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    fun sendNotification(condition: String,temperature: String) {
+    private fun sendNotification(
+        city: String,
+        temp: String,
+        maxTemp: String,
+        minTemp: String,
+        currentTime: String
+    ) {
 
-        lateinit var notificationChannel: NotificationChannel
-        lateinit var notificationManager: NotificationManager
-        lateinit var builder: Notification.Builder
-        val channelId = "12345"
-        val description = "Test Notification"
+        // it is a class to notify the user of events that happen.
+        // This is how you tell the user that something has happened in the
+        // background.
+        notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as  NotificationManager
+        val pendingIntent =
+            PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
-        val intent = Intent(this, MainActivity::class.java)
-        val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        // RemoteViews are used to use the content of
+        // some different layout apart from the current activity layout
+        val contentView = RemoteViews(packageName, R.layout.activity_after_notification)
+
+        // checking if android version is greater than oreo(API 26) or not
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            notificationChannel = NotificationChannel(channelId, description, NotificationManager .IMPORTANCE_HIGH)
+            notificationChannel =  NotificationChannel(channelId, description, NotificationManager.IMPORTANCE_HIGH)
+            notificationChannel.enableLights(true)
+            notificationChannel.lightColor = Color.GREEN
+            notificationChannel.enableVibration(false)
             notificationManager.createNotificationChannel(notificationChannel)
+
             builder = Notification.Builder(this, channelId)
-                .setContentTitle(temperature)
-                .setContentText("Today  weather is $condition").setSmallIcon(R.mipmap.ic_launcher)
-                .setLargeIcon(BitmapFactory.decodeResource(this.resources, R.mipmap.ic_launcher)).setContentIntent(pendingIntent)
+                //.setContent(contentView)
+                .setContentText("$temp  $city \n High $maxTemp | Low $minTemp")
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setLargeIcon(BitmapFactory.decodeResource(this.resources, R.mipmap.ic_launcher))
+                .setContentIntent(pendingIntent)
+        } else {
+
+            builder = Notification.Builder(this)
+                //.setContent(contentView)
+                .setContentText("$temp  $city \n High $maxTemp | Low $minTemp")
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setLargeIcon(BitmapFactory.decodeResource(this.resources, R.mipmap.ic_launcher))
+                .setContentIntent(pendingIntent)
         }
-        notificationManager.notify(12345, builder.build())
-
-
-        var notification = NotificationCompat.Builder(this, "thamsanqa")
-            .setSmallIcon(R.drawable.clear)
-            .setContentTitle("Test")
-            .setContentText("Test")
-            .setLargeIcon(BitmapFactory.decodeResource(this.resources, R.drawable.clear))
-            .setStyle(NotificationCompat.BigPictureStyle()
-                .bigPicture(BitmapFactory.decodeResource(this.resources, R.drawable.clear))
-                .bigLargeIcon(null))
-            .build()
-
+        notificationManager.notify(1234, builder.build())
 
 
     }
